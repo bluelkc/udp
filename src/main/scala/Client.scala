@@ -47,8 +47,9 @@ class Client {
       }
     }
 
-    val res = deserialise(packet.getData)
     udpSocket.close()
+    val res = deserialise(packet.getData)
+
     res match {
       case m : Msg =>
         println("[CLIENT] received from server: " + m.message)
