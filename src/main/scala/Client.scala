@@ -1,6 +1,7 @@
 package udp
 
-import java.net.{DatagramPacket, DatagramSocket, InetSocketAddress}
+import java.net.{DatagramPacket, DatagramSocket, InetSocketAddress, SocketTimeoutException}
+
 import udp.{End, Msg}
 import Util._
 
@@ -33,6 +34,20 @@ class Client {
     val buffer = new Array[Byte](SIZE)
     val packet = new DatagramPacket(buffer, buffer.length)
 
+    var received = false
+    udpSocket.setSoTimeout(2000)
+    var counter = 0
+
+    while(!received) {
+      try {
+        receive(udpSocket, packet)
+        received = true
+      } catch {
+        case e : SocketTimeoutException =>
+          send(message, udpSocket, address)
+          println("Resent messsage " + message.message + " to server")
+      }
+    }
     receive(udpSocket, packet)
     val res = deserialise(packet.getData)
     res match {
