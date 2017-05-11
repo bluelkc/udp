@@ -4,13 +4,10 @@
 package udp
 
 import java.net.{DatagramPacket, DatagramSocket, InetSocketAddress}
-
-import Util._
-
 import scala.util.{Success, Failure}
 import scala.concurrent._
 import ExecutionContext.Implicits.global
-
+import Util._
 
 object Server {
 
@@ -33,7 +30,6 @@ object Server {
           case e: End => {
             println("[SERVER] Server terminates.")
             udpSocket.close()
-            //System.exit(1)
           }
           case m: Msg => {
             val reply = echoMsg(m.message)
@@ -46,21 +42,7 @@ object Server {
         }
       }
       f onComplete {
-        case Success(res) => res /*match {
-          case e: End => {
-            println("Server terminates.")
-            //udpSocket.close()
-            System.exit(1)
-          }
-          case m: Msg => {
-            val reply = echoMsg(m.message)
-            send(reply, udpSocket, new InetSocketAddress(recv.getAddress, recv.getPort))
-            println("Sent reply to client at " + recv.getAddress + ": " + reply.message)
-          }
-          case _ => {
-            println("Received something alien.")
-          }
-        }*/
+        case Success(res) => res
         case Failure(e) =>
           println("[SERVER] An error has occurred: " + e.getMessage)
           e.printStackTrace()

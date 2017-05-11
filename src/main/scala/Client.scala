@@ -1,11 +1,11 @@
+/**
+  * Created by kecen on 9/5/17.
+  */
 package udp
 
 import java.net.{DatagramPacket, DatagramSocket, InetSocketAddress, SocketTimeoutException}
 import Util._
 
-/**
-  * Created by kecen on 9/5/17.
-  */
 class Client {
 
   private val SIZE = 4096
@@ -46,7 +46,7 @@ class Client {
           }
       }
     }
-    //receive(udpSocket, packet)
+
     val res = deserialise(packet.getData)
     udpSocket.close()
     res match {

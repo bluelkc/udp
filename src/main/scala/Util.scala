@@ -5,7 +5,6 @@ package udp
 
 import java.io.ByteArrayOutputStream
 import java.net.{DatagramPacket, DatagramSocket, InetSocketAddress}
-
 import com.twitter.chill._
 
 object Util {

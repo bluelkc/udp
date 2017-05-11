@@ -3,8 +3,6 @@
   */
 
 import org.scalatest._
-
-
 import scala.concurrent._
 import ExecutionContext.Implicits.global
 import udp._
@@ -21,21 +19,9 @@ class Test extends FunSuite with BeforeAndAfterAll with ParallelTestExecution {
     Server.run()
   }
 
-  def futureClient(index : Int) : Future[String] = Future {
-    val c = new Client()
-    val msg = BASE_MSG + index
-    val res = c.sendReq(msg, BASE_PORT + index)
-    res
-  }
+  // test 1 & 2 aim to simulate concurrent client requests
 
   test("Client 1") {
-    /*val client1 : Future[String] = futureClient(1)
-    val client2 : Future[String] = futureClient(2)
-    val client3 : Future[String] = futureClient(3)
-
-    assert(client1.futureValue == (BASE_MSG + 1 + ":echoed"))
-    assert(client2.futureValue == (BASE_MSG + 2 + ":echoed"))
-    assert(client3.futureValue == (BASE_MSG + 3 + ":echoed"))*/
     println("[TEST] Test Client 1 starts.")
     val index = 1
     val c = new Client()
@@ -46,13 +32,6 @@ class Test extends FunSuite with BeforeAndAfterAll with ParallelTestExecution {
   }
 
   test("Client 2") {
-    /*val client1 : Future[String] = futureClient(1)
-    val client2 : Future[String] = futureClient(2)
-    val client3 : Future[String] = futureClient(3)
-
-    assert(client1.futureValue == (BASE_MSG + 1 + ":echoed"))
-    assert(client2.futureValue == (BASE_MSG + 2 + ":echoed"))
-    assert(client3.futureValue == (BASE_MSG + 3 + ":echoed"))*/
     println("[TEST] Test Client 2 starts.")
     val index = 2
     val c = new Client()
@@ -62,15 +41,17 @@ class Test extends FunSuite with BeforeAndAfterAll with ParallelTestExecution {
     println("[TEST] Test Client 2 ends.")
   }
 
+  // test 3 aims to simulate End command and resending scheme
+
   test("Client 3") {
     println("[TEST] Test Client 3 starts.")
     val index =3
     val c = new Client()
 
-    Thread.sleep(3000)
+    Thread.sleep(3000) // wait a safe margin for the first 2 tests to go through
     c.sendEnd(BASE_PORT + index)
 
-    Thread.sleep(1000)
+    Thread.sleep(1000) // wait a safe margin for serve to terminate, then test the resending scheme
     val index2 = 4
     val c2 = new Client()
     val msg = BASE_MSG + index2
