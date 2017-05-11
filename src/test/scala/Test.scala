@@ -61,4 +61,11 @@ class Test extends FunSuite with BeforeAndAfterAll with ParallelTestExecution {
     assert(res == BASE_MSG + index + ":echoed")
     println("Test Client 2 ends.")
   }
+
+  test("Client 3") {
+    println("Test Client 3 starts.")
+    val index =3
+    val c = new Client()
+    c.sendEnd(BASE_PORT + index)
+  }
 }

@@ -58,4 +58,12 @@ class Client {
         "Invalid response."
     }
   }
+
+  def sendEnd(port : Int) : Unit = {
+    val udpSocket = new DatagramSocket(port)
+    val address = new InetSocketAddress(SERVER, PORT_AT_SERVER)
+val message = End()
+    send(message, udpSocket, address)
+    println("Sent End to server.")
+  }
 }
