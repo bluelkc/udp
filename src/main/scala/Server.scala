@@ -51,6 +51,6 @@ object Server {
   }
 
   def echoMsg(input : String) : Msg = {
-    return new Msg(input + ":echoed")
+    Msg(input + ":echoed")
   }
 }

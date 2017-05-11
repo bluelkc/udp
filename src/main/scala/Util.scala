@@ -24,11 +24,21 @@ object Util {
     val output = new Output(baos)
     kryo.writeClassAndObject(output, obj)
     output.close()
-    return baos.toByteArray
+    baos.toByteArray
   }
 
   def deserialise(bytes : Array[Byte]) : Any = {
-    return kryo.readClassAndObject(new Input(bytes))
+    var flag = false
+    while (!flag) {
+      flag = true
+      try {
+        return kryo.readClassAndObject(new Input(bytes))
+      } catch {
+        case a: IndexOutOfBoundsException =>
+          println("IndexOutOfBoundsException catched")
+          flag = false
+      }
+    }
   }
 
   def send(message : MsgType, socket : DatagramSocket, addr : InetSocketAddress) : Unit = {
