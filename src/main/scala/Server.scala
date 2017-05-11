@@ -45,7 +45,7 @@ object Server {
         case Success(res) => res
         case Failure(e) =>
           println("[SERVER] An error has occurred: " + e.getMessage)
-          e.printStackTrace()
+          //e.printStackTrace()
       }
     }
   }
