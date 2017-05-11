@@ -28,15 +28,15 @@ object Util {
   }
 
   def deserialise(bytes : Array[Byte]) : Any = {
-    var flag = false
-    while (!flag) {
-      flag = true
+    var flag = true
+    while (flag) {
+      flag = false
       try {
         return kryo.readClassAndObject(new Input(bytes))
       } catch {
         case a: IndexOutOfBoundsException =>
-          println("IndexOutOfBoundsException catched")
-          flag = false
+          println("[DEBUG] IndexOutOfBoundsException catched")
+          flag = true
       }
     }
   }
