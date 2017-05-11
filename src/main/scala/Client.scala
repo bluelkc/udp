@@ -1,8 +1,6 @@
 package udp
 
 import java.net.{DatagramPacket, DatagramSocket, InetSocketAddress, SocketTimeoutException}
-
-import udp.{End, Msg}
 import Util._
 
 /**
@@ -23,38 +21,39 @@ class Client {
     val address = new InetSocketAddress(SERVER, PORT_AT_SERVER)
 
     val message = Msg(msg)
-    //val message = End()
     send(message, udpSocket, address)
-    println("Sent \"" + message + "\" to server at " + address.getAddress)
-
-    if (message.isInstanceOf[End]) {
-      return "Sent to server End command."
-    }
+    println("[CLIENT] Sent \"" + message + "\" to server at " + address.getAddress)
 
     val buffer = new Array[Byte](SIZE)
     val packet = new DatagramPacket(buffer, buffer.length)
 
-    var received = false
+    var flag = false
     udpSocket.setSoTimeout(2000)
     var counter = 0
 
-    while(!received) {
+    while(!flag) {
       try {
         receive(udpSocket, packet)
-        received = true
+        flag = true
       } catch {
         case e : SocketTimeoutException =>
-          send(message, udpSocket, address)
-          println("Resent messsage " + message.message + " to server")
+          if (counter < MAX_RETRY) {
+            send(message, udpSocket, address)
+            counter += 1
+            println("[CLIENT] Resent messsage " + message.message + " to server")
+          } else {
+            flag = true
+          }
       }
     }
-    receive(udpSocket, packet)
+    //receive(udpSocket, packet)
     val res = deserialise(packet.getData)
+    udpSocket.close()
     res match {
       case m : Msg =>
-        println("received from server: " + m.message)
+        println("[CLIENT] received from server: " + m.message)
         m.message
-      case _ => println("Invalid response.")
+      case _ => println("[CLIENT] Invalid response.")
         "Invalid response."
     }
   }
@@ -62,8 +61,9 @@ class Client {
   def sendEnd(port : Int) : Unit = {
     val udpSocket = new DatagramSocket(port)
     val address = new InetSocketAddress(SERVER, PORT_AT_SERVER)
-val message = End()
+    val message = End()
     send(message, udpSocket, address)
-    println("Sent End to server.")
+    println("[CLIENT] Sent End to server.")
+    udpSocket.close()
   }
 }

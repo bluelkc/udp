@@ -3,7 +3,7 @@
   */
 
 import org.scalatest._
-import org.scalatest.concurrent.ScalaFutures
+
 
 import scala.concurrent._
 import ExecutionContext.Implicits.global
@@ -36,13 +36,13 @@ class Test extends FunSuite with BeforeAndAfterAll with ParallelTestExecution {
     assert(client1.futureValue == (BASE_MSG + 1 + ":echoed"))
     assert(client2.futureValue == (BASE_MSG + 2 + ":echoed"))
     assert(client3.futureValue == (BASE_MSG + 3 + ":echoed"))*/
-    println("Test Client 1 starts.")
+    println("[TEST] Test Client 1 starts.")
     val index = 1
     val c = new Client()
     val msg = BASE_MSG + index
     val res = c.sendReq(msg, BASE_PORT + index)
     assert(res == BASE_MSG + index + ":echoed")
-    println("Test Client 1 ends.")
+    println("[TEST] Test Client 1 ends.")
   }
 
   test("Client 2") {
@@ -53,19 +53,29 @@ class Test extends FunSuite with BeforeAndAfterAll with ParallelTestExecution {
     assert(client1.futureValue == (BASE_MSG + 1 + ":echoed"))
     assert(client2.futureValue == (BASE_MSG + 2 + ":echoed"))
     assert(client3.futureValue == (BASE_MSG + 3 + ":echoed"))*/
-    println("Test Client 2 starts.")
+    println("[TEST] Test Client 2 starts.")
     val index = 2
     val c = new Client()
     val msg = BASE_MSG + index
     val res = c.sendReq(msg, BASE_PORT + index)
     assert(res == BASE_MSG + index + ":echoed")
-    println("Test Client 2 ends.")
+    println("[TEST] Test Client 2 ends.")
   }
 
   test("Client 3") {
-    println("Test Client 3 starts.")
+    println("[TEST] Test Client 3 starts.")
     val index =3
     val c = new Client()
+
+    Thread.sleep(3000)
     c.sendEnd(BASE_PORT + index)
+
+    Thread.sleep(1000)
+    val index2 = 4
+    val c2 = new Client()
+    val msg = BASE_MSG + index2
+    val res = c2.sendReq(msg, BASE_PORT + index2)
+    assert(res == "Invalid response.")
+    println("[TEST] Test Client 3 ends.")
   }
 }

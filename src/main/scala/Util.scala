@@ -7,7 +7,6 @@ import java.io.ByteArrayOutputStream
 import java.net.{DatagramPacket, DatagramSocket, InetSocketAddress}
 
 import com.twitter.chill._
-import udp.{Msg, MsgType}
 
 object Util {
 
@@ -16,6 +15,8 @@ object Util {
     instantiator.setRegistrationRequired(false)
     val kryo = instantiator.newKryo()
     kryo.register(classOf[Msg])
+    kryo.register(classOf[End])
+    kryo.register(classOf[MsgType])
     kryo
   }
 

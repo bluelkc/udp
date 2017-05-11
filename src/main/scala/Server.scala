@@ -3,11 +3,9 @@
   */
 package udp
 
-import java.io.{ByteArrayOutputStream, ObjectOutputStream}
 import java.net.{DatagramPacket, DatagramSocket, InetSocketAddress}
 
 import Util._
-import udp.{End, Msg, MsgType}
 
 import scala.util.{Success, Failure}
 import scala.concurrent._
@@ -33,20 +31,17 @@ object Server {
         val res = deserialise(recv.getData)
         res match {
           case e: End => {
-            println("Server terminates.")
-            //udpSocket.close()
-            System.exit(1)
+            println("[SERVER] Server terminates.")
+            udpSocket.close()
+            //System.exit(1)
           }
           case m: Msg => {
-            if (m.message.contains("1")) {
-              Thread.sleep(2000)
-            }
             val reply = echoMsg(m.message)
             send(reply, udpSocket, new InetSocketAddress(recv.getAddress, recv.getPort))
-            println("Sent reply to client at " + recv.getAddress + ": " + reply.message)
+            println("[SERVER] Sent reply to client at " + recv.getAddress + ": " + reply.message)
           }
           case _ => {
-            println("Received something alien.")
+            println("[SERVER] Received something alien.")
           }
         }
       }
@@ -66,7 +61,9 @@ object Server {
             println("Received something alien.")
           }
         }*/
-        case Failure(e) => println("An error has occurred: " + e.getMessage)
+        case Failure(e) =>
+          println("[SERVER] An error has occurred: " + e.getMessage)
+          e.printStackTrace()
       }
     }
   }
